@@ -19,7 +19,7 @@ async function ensureNotificationPermission(): Promise<boolean> {
 
 /**
  * Replace scheduled due reminders so they match open agenda items.
- * Reminders fire 10 minutes before each incomplete task; the OS only surfaces
+ * Reminders fire 1 minute before each incomplete task; the OS only surfaces
  * them when the app is backgrounded (foreground alerts are suppressed).
  */
 export async function syncDueReminders(

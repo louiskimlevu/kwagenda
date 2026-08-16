@@ -106,4 +106,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Local due reminders via `expo-notifications` (10 min before), suppressed while the app is foregrounded.
 
+## 16. Reminder lead time
+
+> Change your 1min
+
+**Outcome:** Due reminders now fire 1 minute before each task (was 10).
+
 

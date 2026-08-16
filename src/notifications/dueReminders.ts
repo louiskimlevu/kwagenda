@@ -1,6 +1,6 @@
 import type { AgendaItem } from '../agenda/types';
 
-export const DUE_REMINDER_LEAD_MS = 10 * 60 * 1000;
+export const DUE_REMINDER_LEAD_MS = 1 * 60 * 1000;
 
 export function getDueReminderAt(startsAt: string): Date {
   return new Date(new Date(startsAt).getTime() - DUE_REMINDER_LEAD_MS);
@@ -22,7 +22,7 @@ export function buildDueReminderContent(item: AgendaItem): {
   data: { agendaItemId: string };
 } {
   return {
-    title: 'Coming up in 10 minutes',
+    title: 'Coming up in 1 minute',
     body: item.title,
     data: { agendaItemId: item.id },
   };

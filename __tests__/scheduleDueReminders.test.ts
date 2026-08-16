@@ -65,14 +65,14 @@ describe('syncDueReminders', () => {
     expect(mockSchedule).toHaveBeenCalledWith({
       identifier: 'due-reminder:soon',
       content: {
-        title: 'Coming up in 10 minutes',
+        title: 'Coming up in 1 minute',
         body: 'Sketch garden notes',
         data: { agendaItemId: 'soon' },
         sound: true,
       },
       trigger: {
         type: 'date',
-        date: new Date('2026-08-16T10:50:00.000Z'),
+        date: new Date('2026-08-16T10:59:00.000Z'),
       },
     });
   });
@@ -111,7 +111,7 @@ describe('syncDueReminders', () => {
         identifier: 'due-reminder:soon',
         trigger: {
           type: 'date',
-          date: new Date('2026-08-16T13:50:00.000Z'),
+          date: new Date('2026-08-16T13:59:00.000Z'),
         },
       }),
     );

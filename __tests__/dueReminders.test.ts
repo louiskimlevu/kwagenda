@@ -15,13 +15,13 @@ describe('dueReminders', () => {
     done: false,
   };
 
-  it('uses a 10-minute lead before the task is due', () => {
-    expect(DUE_REMINDER_LEAD_MS).toBe(10 * 60 * 1000);
+  it('uses a 1-minute lead before the task is due', () => {
+    expect(DUE_REMINDER_LEAD_MS).toBe(1 * 60 * 1000);
   });
 
-  it('computes the reminder fire time 10 minutes before startsAt', () => {
+  it('computes the reminder fire time 1 minute before startsAt', () => {
     expect(getDueReminderAt(item.startsAt).toISOString()).toBe(
-      '2026-08-16T15:20:00.000Z',
+      '2026-08-16T15:29:00.000Z',
     );
   });
 
@@ -34,14 +34,14 @@ describe('dueReminders', () => {
     expect(
       shouldScheduleDueReminder(
         item,
-        new Date('2026-08-16T15:25:00.000Z'),
+        new Date('2026-08-16T15:29:30.000Z'),
       ),
     ).toBe(false);
   });
 
   it('builds notification copy for an upcoming task', () => {
     expect(buildDueReminderContent(item)).toEqual({
-      title: 'Coming up in 10 minutes',
+      title: 'Coming up in 1 minute',
       body: 'Tea under the peonies',
       data: { agendaItemId: 'task-1' },
     });
