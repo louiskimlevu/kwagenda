@@ -26,4 +26,10 @@ describe('Home page', () => {
     expect(cta).toBeTruthy();
     fireEvent.press(cta);
   });
+
+  it('offers a button to view completed tasks', () => {
+    const { getByRole } = render(<App />);
+    expect(getByRole('button', { name: /see completed/i })).toBeTruthy();
+  });
 });
+

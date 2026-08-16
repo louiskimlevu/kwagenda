@@ -94,4 +94,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Time and done controls separated — tap underlined green time to edit; petal checkbox marks done.
 
+## 14. Completed tasks summary
+
+> When the user accesses the home page, he can click on a button to see a summary of all the task he completed
+
+**Outcome:** Home CTA opens a floral completed-tasks summary of done agenda items.
+
 
