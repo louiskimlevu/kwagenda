@@ -136,4 +136,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Clarified: local due reminders need no Expo push token; a token is only for remote push.
 
+## 21. Merge conflicts with main
+
+> There are merge conflicts with the `main` branch. Review them and classify whether they are simple conflicts, or if there are conflicting intents or other complicating factors. Fix the simple conflicts, and report the complicated ones. Fetch the latest changes to the `main` branch from the origin before you begin.
+
+**Outcome:** Fetched origin/main, classified conflicts, fixed simple ones, reported any complicated ones.
+
 
