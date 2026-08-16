@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start Expo tunnel (if needed) and print an Expo Go URL.
+# Start Expo tunnel (if needed) and print a clickable Expo Go URL.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -43,6 +43,17 @@ metro_up() {
   curl -fsS "$MANIFEST_URL/status" >/dev/null 2>&1
 }
 
+format_urls() {
+  local host="$1"
+  node -e '
+const { formatExpoUrls, isShareableHost } = require("./scripts/formatExpoUrl");
+const host = process.argv[1];
+if (!isShareableHost(host)) process.exit(2);
+const urls = formatExpoUrls(host);
+process.stdout.write(JSON.stringify(urls));
+' "$host"
+}
+
 if metro_up; then
   echo "Expo already running on port ${PORT}."
 else
@@ -55,12 +66,18 @@ else
   trap cleanup_note EXIT
 fi
 
-echo "Waiting for tunnel URL…"
+echo "Waiting for a clickable tunnel URL…"
 HOST=""
+URLS_JSON=""
 for _ in $(seq 1 90); do
   if HOST="$(fetch_host)"; then
     if [[ -n "$HOST" ]]; then
-      break
+      if URLS_JSON="$(format_urls "$HOST")"; then
+        break
+      fi
+      # Loopback / LAN fallback from Metro — keep waiting for *.exp.direct.
+      HOST=""
+      URLS_JSON=""
     fi
   fi
   if [[ "$STARTED_BY_SCRIPT" -eq 1 ]] && ! kill -0 "$EXPO_PID" 2>/dev/null; then
@@ -71,8 +88,8 @@ for _ in $(seq 1 90); do
   sleep 1
 done
 
-if [[ -z "${HOST}" ]]; then
-  echo "Timed out waiting for an Expo tunnel URL."
+if [[ -z "${HOST}" || -z "${URLS_JSON}" ]]; then
+  echo "Timed out waiting for a clickable Expo tunnel URL."
   if [[ -f "${ROOT}/.expo/expo-tunnel.log" ]]; then
     echo "Last log lines:"
     tail -n 40 "${ROOT}/.expo/expo-tunnel.log"
@@ -80,14 +97,24 @@ if [[ -z "${HOST}" ]]; then
   exit 1
 fi
 
-EXP_URL="exp://${HOST}"
+CLICKABLE_URL="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["clickableUrl"])' <<<"$URLS_JSON")"
+EXP_URL="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["expoGoUrl"])' <<<"$URLS_JSON")"
+PRIMARY_URL="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["primaryUrl"])' <<<"$URLS_JSON")"
+
 mkdir -p "$(dirname "$OUT_FILE")"
-printf '%s\n' "$EXP_URL" >"$OUT_FILE"
+{
+  printf '%s\n' "$PRIMARY_URL"
+  printf '%s\n' "$EXP_URL"
+} >"$OUT_FILE"
 
 echo ""
-echo "Expo Go URL"
-echo "-----------"
+echo "Expo Go URL (clickable)"
+echo "-----------------------"
+echo "$CLICKABLE_URL"
+echo ""
+echo "Expo Go deep link (paste fallback)"
+echo "----------------------------------"
 echo "$EXP_URL"
 echo ""
 echo "Also saved to: ${OUT_FILE}"
-echo "Paste into Expo Go → Enter URL, or open on iOS Camera / Safari."
+echo "Tap the https link on your phone, or paste the exp:// URL in Expo Go → Enter URL."

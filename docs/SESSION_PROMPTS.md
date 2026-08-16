@@ -61,3 +61,9 @@ User sent a screenshot from Expo Go on iOS:
 > Create a beautiful home page with flowers background
 
 **Outcome:** Full-bleed floral home screen in `App.tsx` with brand-forward layout, tests, and Expo Go test URL.
+
+## 9. Clickable Expo URL
+
+> Ensure the url is always clickable
+
+**Outcome:** `npm run url` prefers a clickable `https://*.exp.direct` tunnel link (keeps `exp://` as fallback) and waits past localhost until the tunnel host is ready.

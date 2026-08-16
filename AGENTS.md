@@ -13,7 +13,7 @@
 3. Prefer `npx expo install <package>` so versions match SDK 54.
 4. **Implement all features via TDD** — write failing tests first, then implement until green; do not ship feature code without corresponding tests.
 5. **Log all user prompts** — append every user prompt from the session to [docs/SESSION_PROMPTS.md](./docs/SESSION_PROMPTS.md) (keep outcomes brief).
-6. **Always generate a local test URL** as part of implementation — after changes, run `npm run url` and surface the Expo Go `exp://` URL so the user can test on device.
+6. **Always generate a local test URL** as part of implementation — after changes, run `npm run url` and surface the **clickable** `https://*.exp.direct` tunnel link (plus `exp://` fallback). Never present `localhost` / `127.0.0.1` as the shareable test URL. In chat, format it as a Markdown link so it stays tappable.
 
 ## Where to continue
 
