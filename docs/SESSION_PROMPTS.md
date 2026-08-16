@@ -100,4 +100,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Home CTA opens a floral completed-tasks summary of done agenda items.
 
+## 15. Due-soon notifications
+
+> When the user is not in the app, send her a notification 10 minutes before a task is due.
+
+**Outcome:** Local due reminders via `expo-notifications` (10 min before), suppressed while the app is foregrounded.
+
 

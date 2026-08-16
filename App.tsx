@@ -24,10 +24,16 @@ import { sampleAgendaItems } from './src/agenda/sampleAgenda';
 import type { AgendaItem } from './src/agenda/types';
 import { AgendaScreen } from './src/components/AgendaScreen';
 import { CompletedSummaryScreen } from './src/components/CompletedSummaryScreen';
+import {
+  configureDueReminderForegroundBehavior,
+  syncDueReminders,
+} from './src/notifications/scheduleDueReminders';
 
 const flowersBackground = require('./assets/flowers-background.png');
 
 type Screen = 'home' | 'agenda' | 'completed';
+
+configureDueReminderForegroundBehavior();
 
 export default function App() {
   const [cormorantLoaded] = useCormorantFonts({
@@ -49,6 +55,10 @@ export default function App() {
   const brandTranslate = useRef(new Animated.Value(18)).current;
   const copyOpacity = useRef(new Animated.Value(0)).current;
   const ctaOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    void syncDueReminders(items);
+  }, [items]);
 
   useEffect(() => {
     if (!fontsReady || screen !== 'home') {
