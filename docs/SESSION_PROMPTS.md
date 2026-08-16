@@ -112,4 +112,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Due reminders now fire 1 minute before each task (was 10).
 
+## 17. Timezone mode
+
+> Make the app configurable for the tomzelne utc or local
+
+**Outcome:** Home toggle switches agenda display/edit between Local time and UTC; reminders still use absolute stored times.
+
 

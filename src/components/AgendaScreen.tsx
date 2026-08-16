@@ -21,13 +21,14 @@ import {
   sortAgendaItems,
   toEditableClockDate,
 } from '../agenda/agendaModel';
-import type { AgendaItem } from '../agenda/types';
+import type { AgendaItem, AgendaTimeZoneMode } from '../agenda/types';
 
 const flowersBackground = require('../../assets/flowers-background.png');
 
 type AgendaScreenProps = {
   items: AgendaItem[];
   dayIso: string;
+  timeZoneMode: AgendaTimeZoneMode;
   onBack: () => void;
   onToggleDone: (id: string) => void;
   onAddItem: (title: string) => void;
@@ -37,6 +38,7 @@ type AgendaScreenProps = {
 export function AgendaScreen({
   items,
   dayIso,
+  timeZoneMode,
   onBack,
   onToggleDone,
   onAddItem,
@@ -76,7 +78,7 @@ export function AgendaScreen({
 
   const openTimeEditor = (item: AgendaItem) => {
     setEditingItem(item);
-    setDraftTime(toEditableClockDate(item.startsAt));
+    setDraftTime(toEditableClockDate(item.startsAt, timeZoneMode));
   };
 
   const closeTimeEditor = () => {
@@ -90,7 +92,7 @@ export function AgendaScreen({
     }
     onUpdateTime(
       editingItem.id,
-      fromEditableClockDate(editingItem.startsAt, draftTime),
+      fromEditableClockDate(editingItem.startsAt, draftTime, timeZoneMode),
     );
     closeTimeEditor();
   };
@@ -135,7 +137,9 @@ export function AgendaScreen({
           <Text style={styles.heading} accessibilityRole="header">
             Today’s bloom
           </Text>
-          <Text style={styles.dayLabel}>{formatAgendaDayLabel(dayIso)}</Text>
+          <Text style={styles.dayLabel}>
+            {formatAgendaDayLabel(dayIso, timeZoneMode)}
+          </Text>
         </View>
 
         <Animated.View
@@ -171,7 +175,7 @@ export function AgendaScreen({
                     ]}
                   >
                     <Text style={styles.time}>
-                      {formatAgendaTime(item.startsAt)}
+                      {formatAgendaTime(item.startsAt, timeZoneMode)}
                     </Text>
                   </Pressable>
 

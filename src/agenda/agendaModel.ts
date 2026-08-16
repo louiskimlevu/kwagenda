@@ -1,4 +1,6 @@
-import type { AgendaItem } from './types';
+import type { AgendaItem, AgendaTimeZoneMode } from './types';
+
+export type { AgendaTimeZoneMode };
 
 export function sortAgendaItems(items: AgendaItem[]): AgendaItem[] {
   return [...items].sort(
@@ -6,19 +8,25 @@ export function sortAgendaItems(items: AgendaItem[]): AgendaItem[] {
   );
 }
 
-export function formatAgendaTime(iso: string): string {
+export function formatAgendaTime(
+  iso: string,
+  timeZoneMode: AgendaTimeZoneMode = 'utc',
+): string {
   return new Date(iso).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
-    timeZone: 'UTC',
+    ...(timeZoneMode === 'utc' ? { timeZone: 'UTC' } : {}),
   });
 }
 
-export function formatAgendaDayLabel(iso: string): string {
+export function formatAgendaDayLabel(
+  iso: string,
+  timeZoneMode: AgendaTimeZoneMode = 'utc',
+): string {
   return new Date(iso).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
-    timeZone: 'UTC',
+    ...(timeZoneMode === 'utc' ? { timeZone: 'UTC' } : {}),
   });
 }
 
@@ -53,9 +61,33 @@ export function withTimeOnSameUtcDay(
   return next.toISOString();
 }
 
-/** Build a local Date whose wall clock matches the UTC time we display. */
-export function toEditableClockDate(iso: string): Date {
+export function withTimeOnSameLocalDay(
+  dayIso: string,
+  hours: number,
+  minutes: number,
+): string {
+  const next = new Date(dayIso);
+  next.setHours(hours, minutes, 0, 0);
+  return next.toISOString();
+}
+
+/** Build a Date whose wall clock matches the time we display for editing. */
+export function toEditableClockDate(
+  iso: string,
+  timeZoneMode: AgendaTimeZoneMode = 'utc',
+): Date {
   const source = new Date(iso);
+  if (timeZoneMode === 'local') {
+    return new Date(
+      2000,
+      0,
+      1,
+      source.getHours(),
+      source.getMinutes(),
+      0,
+      0,
+    );
+  }
   return new Date(
     2000,
     0,
@@ -67,7 +99,14 @@ export function toEditableClockDate(iso: string): Date {
   );
 }
 
-export function fromEditableClockDate(dayIso: string, clock: Date): string {
+export function fromEditableClockDate(
+  dayIso: string,
+  clock: Date,
+  timeZoneMode: AgendaTimeZoneMode = 'utc',
+): string {
+  if (timeZoneMode === 'local') {
+    return withTimeOnSameLocalDay(dayIso, clock.getHours(), clock.getMinutes());
+  }
   return withTimeOnSameUtcDay(dayIso, clock.getHours(), clock.getMinutes());
 }
 
@@ -81,4 +120,14 @@ export function setAgendaItemTime(
 
 export function getCompletedAgendaItems(items: AgendaItem[]): AgendaItem[] {
   return sortAgendaItems(items.filter((item) => item.done));
+}
+
+export function formatTimeZoneModeLabel(mode: AgendaTimeZoneMode): string {
+  return mode === 'local' ? 'Local time' : 'UTC';
+}
+
+export function toggleTimeZoneMode(
+  mode: AgendaTimeZoneMode,
+): AgendaTimeZoneMode {
+  return mode === 'local' ? 'utc' : 'local';
 }

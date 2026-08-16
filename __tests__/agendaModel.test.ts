@@ -2,12 +2,15 @@ import {
   createAgendaItem,
   formatAgendaDayLabel,
   formatAgendaTime,
+  formatTimeZoneModeLabel,
   fromEditableClockDate,
   getCompletedAgendaItems,
   setAgendaItemTime,
   sortAgendaItems,
   toEditableClockDate,
   toggleAgendaItemDone,
+  toggleTimeZoneMode,
+  withTimeOnSameLocalDay,
   withTimeOnSameUtcDay,
 } from '../src/agenda/agendaModel';
 import type { AgendaItem } from '../src/agenda/types';
@@ -30,13 +33,30 @@ describe('agendaModel', () => {
     ]);
   });
 
-  it('formats a readable time for an agenda slot', () => {
-    expect(formatAgendaTime('2026-08-16T08:30:00.000Z')).toMatch(/8:30/);
+  it('formats a readable UTC time for an agenda slot', () => {
+    expect(formatAgendaTime('2026-08-16T08:30:00.000Z', 'utc')).toMatch(/8:30/);
   });
 
-  it('formats a floral day label for the agenda header', () => {
-    expect(formatAgendaDayLabel('2026-08-16T12:00:00.000Z')).toMatch(
+  it('formats a readable local time for an agenda slot', () => {
+    const iso = '2026-08-16T08:30:00.000Z';
+    expect(formatAgendaTime(iso, 'local')).toBe(
+      new Date(iso).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+      }),
+    );
+  });
+
+  it('formats a floral day label for the agenda header in UTC or local', () => {
+    expect(formatAgendaDayLabel('2026-08-16T12:00:00.000Z', 'utc')).toMatch(
       /August 16/,
+    );
+    const iso = '2026-08-16T12:00:00.000Z';
+    expect(formatAgendaDayLabel(iso, 'local')).toBe(
+      new Date(iso).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+      }),
     );
   });
 
@@ -64,12 +84,30 @@ describe('agendaModel', () => {
     );
   });
 
+  it('applies clock time on the local calendar day', () => {
+    const dayIso = '2026-08-16T12:00:00.000Z';
+    const expected = new Date(dayIso);
+    expected.setHours(15, 45, 0, 0);
+    expect(withTimeOnSameLocalDay(dayIso, 15, 45)).toBe(expected.toISOString());
+  });
+
   it('maps displayed UTC clock times into a local picker date and back', () => {
-    const clock = toEditableClockDate('2026-08-16T08:30:00.000Z');
+    const clock = toEditableClockDate('2026-08-16T08:30:00.000Z', 'utc');
     expect(clock.getHours()).toBe(8);
     expect(clock.getMinutes()).toBe(30);
-    expect(fromEditableClockDate('2026-08-16T08:30:00.000Z', clock)).toBe(
-      '2026-08-16T08:30:00.000Z',
+    expect(
+      fromEditableClockDate('2026-08-16T08:30:00.000Z', clock, 'utc'),
+    ).toBe('2026-08-16T08:30:00.000Z');
+  });
+
+  it('maps displayed local clock times into a picker date and back', () => {
+    const iso = '2026-08-16T08:30:00.000Z';
+    const clock = toEditableClockDate(iso, 'local');
+    const source = new Date(iso);
+    expect(clock.getHours()).toBe(source.getHours());
+    expect(clock.getMinutes()).toBe(source.getMinutes());
+    expect(fromEditableClockDate(iso, clock, 'local')).toBe(
+      withTimeOnSameLocalDay(iso, clock.getHours(), clock.getMinutes()),
     );
   });
 
@@ -105,5 +143,11 @@ describe('agendaModel', () => {
       'late',
     ]);
   });
-});
 
+  it('labels and toggles the timezone mode', () => {
+    expect(formatTimeZoneModeLabel('local')).toBe('Local time');
+    expect(formatTimeZoneModeLabel('utc')).toBe('UTC');
+    expect(toggleTimeZoneMode('local')).toBe('utc');
+    expect(toggleTimeZoneMode('utc')).toBe('local');
+  });
+});

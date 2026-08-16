@@ -4,3 +4,6 @@ export type AgendaItem = {
   startsAt: string;
   done: boolean;
 };
+
+/** How agenda wall-clock times are displayed and edited. */
+export type AgendaTimeZoneMode = 'utc' | 'local';

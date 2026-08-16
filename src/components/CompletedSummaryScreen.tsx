@@ -13,17 +13,19 @@ import {
   formatAgendaTime,
   getCompletedAgendaItems,
 } from '../agenda/agendaModel';
-import type { AgendaItem } from '../agenda/types';
+import type { AgendaItem, AgendaTimeZoneMode } from '../agenda/types';
 
 const flowersBackground = require('../../assets/flowers-background.png');
 
 type CompletedSummaryScreenProps = {
   items: AgendaItem[];
+  timeZoneMode: AgendaTimeZoneMode;
   onBack: () => void;
 };
 
 export function CompletedSummaryScreen({
   items,
+  timeZoneMode,
   onBack,
 }: CompletedSummaryScreenProps) {
   const completed = getCompletedAgendaItems(items);
@@ -109,7 +111,7 @@ export function CompletedSummaryScreen({
               renderItem={({ item }) => (
                 <View style={styles.row}>
                   <Text style={styles.time}>
-                    {formatAgendaTime(item.startsAt)}
+                    {formatAgendaTime(item.startsAt, timeZoneMode)}
                   </Text>
                   <Text style={styles.title} numberOfLines={2}>
                     {item.title}

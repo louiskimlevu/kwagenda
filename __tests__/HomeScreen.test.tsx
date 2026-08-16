@@ -31,5 +31,15 @@ describe('Home page', () => {
     const { getByRole } = render(<App />);
     expect(getByRole('button', { name: /see completed/i })).toBeTruthy();
   });
+
+  it('lets the user switch between local and UTC time', () => {
+    render(<App />);
+
+    expect(screen.getByText('Local time')).toBeTruthy();
+    fireEvent.press(screen.getByTestId('timezone-mode-toggle'));
+    expect(screen.getByText('UTC')).toBeTruthy();
+    fireEvent.press(screen.getByTestId('timezone-mode-toggle'));
+    expect(screen.getByText('Local time')).toBeTruthy();
+  });
 });
 
