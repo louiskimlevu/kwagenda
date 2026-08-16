@@ -3,6 +3,7 @@ import {
   formatAgendaDayLabel,
   formatAgendaTime,
   fromEditableClockDate,
+  getCompletedAgendaItems,
   setAgendaItemTime,
   sortAgendaItems,
   toEditableClockDate,
@@ -80,4 +81,29 @@ describe('agendaModel', () => {
     );
     expect(next.find((i) => i.id === 'b')?.startsAt).toBe(base.startsAt);
   });
+
+  it('returns completed items sorted by start time', () => {
+    const items: AgendaItem[] = [
+      { ...base, id: 'open', done: false },
+      {
+        ...base,
+        id: 'late',
+        title: 'Tea',
+        startsAt: '2026-08-16T15:00:00.000Z',
+        done: true,
+      },
+      {
+        ...base,
+        id: 'early',
+        title: 'Walk',
+        startsAt: '2026-08-16T07:00:00.000Z',
+        done: true,
+      },
+    ];
+    expect(getCompletedAgendaItems(items).map((i) => i.id)).toEqual([
+      'early',
+      'late',
+    ]);
+  });
 });
+

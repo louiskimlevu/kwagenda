@@ -94,17 +94,28 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Time and done controls separated — tap underlined green time to edit; petal checkbox marks done.
 
-## 14. Add plan button spacing
+## 14. Completed tasks summary
+
+> When the user accesses the home page, he can click on a button to see a summary of all the task he completed
+
+**Outcome:** Home CTA opens a floral completed-tasks summary of done agenda items.
+
+## 15. Add plan button spacing
 
 > Add a bit more space for the add plan button
 > (Screenshot of floral agenda compose row flush to bottom/right edges)
 
 **Outcome:** Extra bottom and side inset around the compose “Add” control.
 
-## 15. Add plan button spacing (more)
+## 16. Add plan button spacing (more)
 
 > One more cm
 
 **Outcome:** Another ~1cm of bottom inset around the compose Add control.
 
+## 17. Merge conflicts with main
+
+> There are merge conflicts with the `main` branch. Review them and classify whether they are simple conflicts, or if there are conflicting intents or other complicating factors. Fix the simple conflicts, and report the complicated ones. Fetch the latest changes to the `main` branch from the origin before you begin.
+
+**Outcome:** Fetched `origin/main`; only conflict was append-only `docs/SESSION_PROMPTS.md` — kept both histories and renumbered.
 
