@@ -130,4 +130,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Regenerated and shared the Expo Go launcher URL.
 
+## 20. Notification token?
+
+> Is there not a token to use
+
+**Outcome:** Clarified: local due reminders need no Expo push token; a token is only for remote push.
+
 
