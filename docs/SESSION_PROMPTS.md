@@ -101,4 +101,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Extra bottom and side inset around the compose “Add” control.
 
+## 15. Add plan button spacing (more)
+
+> One more cm
+
+**Outcome:** Another ~1cm of bottom inset around the compose Add control.
+
 

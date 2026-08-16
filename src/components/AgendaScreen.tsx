@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginTop: 12,
-    marginBottom: 14,
+    marginBottom: 52,
     paddingRight: 8,
   },
   input: {

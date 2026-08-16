@@ -87,7 +87,8 @@ describe('AgendaScreen', () => {
     const compose = screen.getByTestId('agenda-compose');
     const style = StyleSheet.flatten(compose.props.style);
 
-    expect(style.marginBottom).toBeGreaterThanOrEqual(12);
+    // ~1cm extra beyond the prior inset (≈38pt)
+    expect(style.marginBottom).toBeGreaterThanOrEqual(50);
     expect(style.paddingRight).toBeGreaterThanOrEqual(6);
   });
 
