@@ -56,13 +56,13 @@ describe('AgendaScreen', () => {
     expect(onBack).toHaveBeenCalledTimes(1);
   });
 
-  it('toggles an item when pressed', () => {
+  it('toggles an item when the petal control is pressed', () => {
     const onToggleDone = jest.fn();
     render(<AgendaScreen {...defaultProps} onToggleDone={onToggleDone} />);
 
     fireEvent.press(
       screen.getByRole('button', {
-        name: 'Morning walk among the blooms',
+        name: /mark morning walk among the blooms done/i,
       }),
     );
     expect(onToggleDone).toHaveBeenCalledWith('1');
@@ -123,7 +123,7 @@ describe('AgendaScreen', () => {
     expect(onUpdateTime).toHaveBeenCalledWith('1', '2026-08-16T09:15:00.000Z');
   });
 
-  it('does not toggle done when editing time', () => {
+  it('does not toggle done when the time control is pressed', () => {
     const onToggleDone = jest.fn();
     render(<AgendaScreen {...defaultProps} onToggleDone={onToggleDone} />);
 
@@ -134,5 +134,17 @@ describe('AgendaScreen', () => {
     );
 
     expect(onToggleDone).not.toHaveBeenCalled();
+  });
+
+  it('does not open the time editor when marking a task done', () => {
+    render(<AgendaScreen {...defaultProps} />);
+
+    fireEvent.press(
+      screen.getByRole('button', {
+        name: /mark morning walk among the blooms done/i,
+      }),
+    );
+
+    expect(screen.queryByText('Set bloom time')).toBeNull();
   });
 });

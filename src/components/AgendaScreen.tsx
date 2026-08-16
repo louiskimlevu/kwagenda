@@ -160,9 +160,11 @@ export function AgendaScreen({
               renderItem={({ item }) => (
                 <View style={styles.row}>
                   <Pressable
+                    testID={`edit-time-${item.id}`}
                     accessibilityRole="button"
                     accessibilityLabel={`Edit time for ${item.title}`}
                     onPress={() => openTimeEditor(item)}
+                    hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
                     style={({ pressed }) => [
                       styles.timeButton,
                       pressed && styles.timePressed,
@@ -173,24 +175,30 @@ export function AgendaScreen({
                     </Text>
                   </Pressable>
 
+                  <Text
+                    style={[styles.title, item.done && styles.titleDone]}
+                    numberOfLines={2}
+                  >
+                    {item.title}
+                  </Text>
+
                   <Pressable
+                    testID={`toggle-done-${item.id}`}
                     accessibilityRole="button"
-                    accessibilityLabel={item.title}
+                    accessibilityLabel={
+                      item.done
+                        ? `Mark ${item.title} not done`
+                        : `Mark ${item.title} done`
+                    }
                     onPress={() => onToggleDone(item.id)}
+                    hitSlop={10}
                     style={({ pressed }) => [
-                      styles.taskBody,
+                      styles.petalButton,
                       pressed && styles.rowPressed,
                     ]}
                   >
-                    <Text
-                      style={[styles.title, item.done && styles.titleDone]}
-                      numberOfLines={2}
-                    >
-                      {item.title}
-                    </Text>
                     <View
                       style={[styles.petal, item.done && styles.petalDone]}
-                      accessibilityElementsHidden
                     />
                   </Pressable>
                 </View>
@@ -355,36 +363,33 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 6,
+    paddingVertical: 10,
     paddingHorizontal: 4,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(247, 240, 232, 0.18)',
-    gap: 10,
+    gap: 12,
   },
   timeButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 6,
-    minWidth: 78,
+    zIndex: 2,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    minWidth: 86,
+    borderRadius: 4,
+    backgroundColor: 'rgba(168, 196, 160, 0.12)',
   },
   timePressed: {
-    opacity: 0.7,
-  },
-  taskBody: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    paddingVertical: 8,
-    paddingRight: 8,
+    backgroundColor: 'rgba(168, 196, 160, 0.28)',
   },
   rowPressed: {
-    backgroundColor: 'rgba(247, 240, 232, 0.06)',
+    opacity: 0.7,
   },
   time: {
     fontFamily: 'SourceSans3_600SemiBold',
     fontSize: 13,
     letterSpacing: 0.4,
     color: '#A8C4A0',
+    textDecorationLine: 'underline',
+    textDecorationColor: 'rgba(168, 196, 160, 0.55)',
   },
   title: {
     flex: 1,
@@ -397,14 +402,22 @@ const styles = StyleSheet.create({
     color: 'rgba(247, 240, 232, 0.45)',
     textDecorationLine: 'line-through',
   },
+  petalButton: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   petal: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'rgba(168, 196, 160, 0.35)',
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 1.5,
+    borderColor: 'rgba(168, 196, 160, 0.65)',
+    backgroundColor: 'transparent',
   },
   petalDone: {
     backgroundColor: '#4F6B4E',
+    borderColor: '#4F6B4E',
   },
   compose: {
     flexDirection: 'row',

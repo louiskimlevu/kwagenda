@@ -86,4 +86,12 @@ User sent a screenshot from Expo Go on iOS:
 > Give an option to edit the timing for each task
 > (Screenshot of floral agenda list with times)
 
-**Outcome:** (in progress) Per-task time editing on the agenda.
+**Outcome:** Tap a task’s time to open a floral “Set bloom time” picker; save updates that item’s schedule.
+
+## 13. Time tap marks done
+
+> Clicking on the green time only mark the task done
+
+**Outcome:** Time and done controls separated — tap underlined green time to edit; petal checkbox marks done.
+
+
