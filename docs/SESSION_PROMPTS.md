@@ -94,4 +94,11 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Time and done controls separated — tap underlined green time to edit; petal checkbox marks done.
 
+## 14. Add plan button spacing
+
+> Add a bit more space for the add plan button
+> (Screenshot of floral agenda compose row flush to bottom/right edges)
+
+**Outcome:** Extra bottom and side inset around the compose “Add” control.
+
 
