@@ -55,3 +55,9 @@ User sent a screenshot from Expo Go on iOS:
 > - as part of the implementation, always generate a url to allow the user to test the app locally
 
 **Outcome:** Added constraints 4–6 to `AGENTS.md`; logged this prompt here.
+
+## 8. Flower home page
+
+> Create a beautiful home page with flowers background
+
+**Outcome:** Full-bleed floral home screen in `App.tsx` with brand-forward layout, tests, and Expo Go test URL.
