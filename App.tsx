@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   ImageBackground,
@@ -19,8 +19,14 @@ import {
   SourceSans3_600SemiBold,
   useFonts as useSourceSansFonts,
 } from '@expo-google-fonts/source-sans-3';
+import { createAgendaItem, toggleAgendaItemDone } from './src/agenda/agendaModel';
+import { sampleAgendaItems } from './src/agenda/sampleAgenda';
+import type { AgendaItem } from './src/agenda/types';
+import { AgendaScreen } from './src/components/AgendaScreen';
 
 const flowersBackground = require('./assets/flowers-background.png');
+
+type Screen = 'home' | 'agenda';
 
 export default function App() {
   const [cormorantLoaded] = useCormorantFonts({
@@ -33,6 +39,9 @@ export default function App() {
   });
 
   const fontsReady = cormorantLoaded && sourceSansLoaded;
+  const [screen, setScreen] = useState<Screen>('home');
+  const [items, setItems] = useState<AgendaItem[]>(sampleAgendaItems);
+  const dayIso = '2026-08-16T12:00:00.000Z';
 
   const bgScale = useRef(new Animated.Value(1)).current;
   const brandOpacity = useRef(new Animated.Value(0)).current;
@@ -41,9 +50,15 @@ export default function App() {
   const ctaOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (!fontsReady) {
+    if (!fontsReady || screen !== 'home') {
       return;
     }
+
+    bgScale.setValue(1);
+    brandOpacity.setValue(0);
+    brandTranslate.setValue(18);
+    copyOpacity.setValue(0);
+    ctaOpacity.setValue(0);
 
     Animated.parallel([
       Animated.timing(bgScale, {
@@ -78,6 +93,7 @@ export default function App() {
     ]).start();
   }, [
     fontsReady,
+    screen,
     bgScale,
     brandOpacity,
     brandTranslate,
@@ -87,6 +103,29 @@ export default function App() {
 
   if (!fontsReady) {
     return <View style={styles.loading} />;
+  }
+
+  if (screen === 'agenda') {
+    return (
+      <>
+        <AgendaScreen
+          items={items}
+          dayIso={dayIso}
+          onBack={() => setScreen('home')}
+          onToggleDone={(id) => setItems((prev) => toggleAgendaItemDone(prev, id))}
+          onAddItem={(title) =>
+            setItems((prev) => [
+              ...prev,
+              createAgendaItem({
+                title,
+                startsAt: new Date().toISOString(),
+              }),
+            ])
+          }
+        />
+        <StatusBar style="light" />
+      </>
+    );
   }
 
   return (
@@ -139,7 +178,7 @@ export default function App() {
               styles.cta,
               pressed && styles.ctaPressed,
             ]}
-            onPress={() => {}}
+            onPress={() => setScreen('agenda')}
           >
             <Text style={styles.ctaLabel}>Open agenda</Text>
           </Pressable>
