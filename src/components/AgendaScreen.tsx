@@ -207,7 +207,7 @@ export function AgendaScreen({
           )}
         </Animated.View>
 
-        <View style={styles.compose}>
+        <View testID="agenda-compose" style={styles.compose}>
           <TextInput
             value={draft}
             onChangeText={setDraft}
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 56,
     paddingHorizontal: 22,
-    paddingBottom: 28,
+    paddingBottom: 36,
   },
   header: {
     marginBottom: 22,
@@ -424,6 +424,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginTop: 12,
+    marginBottom: 52,
+    paddingRight: 8,
   },
   input: {
     flex: 1,
