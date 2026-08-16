@@ -73,3 +73,25 @@ User sent a screenshot from Expo Go on iOS:
 > (Screenshot) Opening `https://9r9uaby-anonymous-8081.exp.direct` in Safari showed the Expo manifest JSON instead of launching Expo Go.
 
 **Outcome:** Switch the clickable share URL to an Expo Go launcher link that opens the app, not the raw tunnel manifest.
+
+## 11. Floral agenda
+
+> Implement the agenda,
+> Floral theme
+
+**Outcome:** Floral agenda screen (`Today’s bloom`) with seed plans, add/toggle, home ↔ agenda navigation, tests, and Expo Go test URL.
+
+## 12. Edit task timing
+
+> Give an option to edit the timing for each task
+> (Screenshot of floral agenda list with times)
+
+**Outcome:** Tap a task’s time to open a floral “Set bloom time” picker; save updates that item’s schedule.
+
+## 13. Time tap marks done
+
+> Clicking on the green time only mark the task done
+
+**Outcome:** Time and done controls separated — tap underlined green time to edit; petal checkbox marks done.
+
+

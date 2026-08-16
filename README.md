@@ -12,7 +12,7 @@ Verified working on a physical iPhone via **App Store Expo Go** + Expo tunnel fr
 | PR | https://github.com/louiskimlevu/kwagenda/pull/1 |
 | SDK | Expo **54** (`expo ~54.0.35`, RN `0.81.5`) |
 | Entry | `index.ts` → `App.tsx` |
-| UI so far | Single home screen: brand `kwagenda` + subtitle |
+| UI so far | Floral home + agenda (`Today’s bloom`) with add/toggle plans |
 | Last verified | Tunnel + Expo Go on iOS — working |
 
 ### Why SDK 54 (do not bump casually)
