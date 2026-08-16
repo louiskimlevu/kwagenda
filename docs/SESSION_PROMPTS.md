@@ -124,4 +124,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Clarified: yes for local scheduled notifications once the phone loads the app and grants permission; Metro/tunnel is only needed to schedule, not to deliver.
 
+## 19. Resend Expo Go link
+
+> Resend expo go link
+
+**Outcome:** Regenerated and shared the Expo Go launcher URL.
+
 
