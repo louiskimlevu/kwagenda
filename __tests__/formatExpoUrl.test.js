@@ -25,18 +25,25 @@ describe('formatExpoUrl', () => {
     expect(isShareableHost(tunnelHost)).toBe(true);
   });
 
-  it('builds a clickable https URL for tunnel hosts', () => {
-    expect(formatClickableUrl(tunnelHost)).toBe(`https://${tunnelHost}`);
+  it('builds a clickable Expo Go launcher URL (not the raw manifest root)', () => {
+    expect(formatClickableUrl(tunnelHost)).toBe(
+      `https://${tunnelHost}/_expo/link?platform=ios`,
+    );
+    expect(formatClickableUrl(tunnelHost)).not.toBe(`https://${tunnelHost}`);
   });
 
   it('still builds the classic exp:// deep link', () => {
     expect(formatExpoGoUrl(tunnelHost)).toBe(`exp://${tunnelHost}`);
   });
 
-  it('returns https as the primary shareable URL for tunnels', () => {
+  it('returns the launcher https URL as the primary shareable link', () => {
     const urls = formatExpoUrls(tunnelHost);
-    expect(urls.primaryUrl).toBe(`https://${tunnelHost}`);
-    expect(urls.clickableUrl).toBe(`https://${tunnelHost}`);
+    expect(urls.primaryUrl).toBe(
+      `https://${tunnelHost}/_expo/link?platform=ios`,
+    );
+    expect(urls.clickableUrl).toBe(
+      `https://${tunnelHost}/_expo/link?platform=ios`,
+    );
     expect(urls.expoGoUrl).toBe(`exp://${tunnelHost}`);
   });
 

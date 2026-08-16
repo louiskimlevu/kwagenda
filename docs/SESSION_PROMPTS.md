@@ -67,3 +67,9 @@ User sent a screenshot from Expo Go on iOS:
 > Ensure the url is always clickable
 
 **Outcome:** `npm run url` prefers a clickable `https://*.exp.direct` tunnel link (keeps `exp://` as fallback) and waits past localhost until the tunnel host is ready.
+
+## 10. HTTPS link opened manifest JSON
+
+> (Screenshot) Opening `https://9r9uaby-anonymous-8081.exp.direct` in Safari showed the Expo manifest JSON instead of launching Expo Go.
+
+**Outcome:** Switch the clickable share URL to an Expo Go launcher link that opens the app, not the raw tunnel manifest.

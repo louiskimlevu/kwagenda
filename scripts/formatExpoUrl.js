@@ -1,5 +1,6 @@
 /**
- * Format Expo Go / tunnel URLs so chat and browsers can auto-link them.
+ * Format Expo Go / tunnel URLs so chat and browsers can auto-link them,
+ * and so a tap on iOS/Android opens Expo Go (not the raw manifest JSON).
  */
 
 function hostWithoutPort(host) {
@@ -42,14 +43,14 @@ function formatExpoGoUrl(host) {
 }
 
 /**
- * HTTPS for *.exp.direct is clickable in Cursor/GitHub/Slack and serves the
- * same Metro tunnel as exp://.
+ * Clickable HTTPS that 307-redirects into Expo Go via Metro's /_expo/link.
+ * Root https://*.exp.direct serves the manifest JSON in Safari — do not use it.
  */
 function formatClickableUrl(host) {
   if (!isTunnelHost(host)) {
     throw new Error(`Expected an *.exp.direct tunnel host, got: ${host}`);
   }
-  return `https://${host}`;
+  return `https://${host}/_expo/link?platform=ios`;
 }
 
 function formatExpoUrls(host) {

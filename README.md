@@ -55,15 +55,17 @@ npm run url
 
 This starts `expo start --tunnel` if Metro is not already running, waits for a
 public `*.exp.direct` tunnel (skips `localhost`), then prints a **clickable**
-HTTPS URL plus an `exp://` fallback:
+HTTPS launcher plus an `exp://` fallback:
 
 ```text
-https://<subdomain>.exp.direct
+https://<subdomain>.exp.direct/_expo/link?platform=ios
 exp://<subdomain>.exp.direct
 ```
 
-Both are written to `.expo/expo-go-url.txt` (HTTPS first). Tap the https link
-on your phone, or paste `exp://…` into Expo Go → Enter URL.
+Both are written to `.expo/expo-go-url.txt` (HTTPS launcher first). Tap the
+https link on your phone — it 307-redirects into Expo Go (the bare tunnel root
+only shows manifest JSON in Safari). If the redirect is blocked, paste
+`exp://…` into Expo Go → Enter URL.
 
 ### Or start tunnel yourself
 
