@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "tunnel": "expo start --tunnel"
+    "tunnel": "expo start --tunnel",
+    "url": "bash scripts/generate-expo-url.sh"
   },
   "dependencies": {
     "@expo/ngrok": "^4.1.3",

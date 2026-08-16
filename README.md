@@ -27,12 +27,13 @@ Docs: https://docs.expo.dev/troubleshooting/expo-go-version-mismatch/
 ## Project layout
 
 ```
-App.tsx          # Root UI (edit here to continue the app)
-index.ts         # Expo entry (registerRootComponent)
-app.json         # Expo config (name/slug/scheme: kwagenda)
-package.json     # Scripts + deps (@expo/ngrok for tunnel)
-assets/          # Icons / splash
-AGENTS.md        # Points agents at SDK 54 docs
+App.tsx                        # Root UI (edit here to continue the app)
+index.ts                       # Expo entry (registerRootComponent)
+app.json                       # Expo config (name/slug/scheme: kwagenda)
+package.json                   # Scripts + deps (@expo/ngrok for tunnel)
+scripts/generate-expo-url.sh   # Start tunnel (if needed) + print Expo Go URL
+assets/                        # Icons / splash
+AGENTS.md                      # Points agents at SDK 54 docs
 ```
 
 ## Setup
@@ -43,7 +44,23 @@ npm install
 
 ## Run for Expo Go (cloud / remote phone)
 
-Phone is not on the same LAN as a Cloud Agent, so use **tunnel**:
+Phone is not on the same LAN as a Cloud Agent, so use **tunnel**.
+
+### Generate / print the Expo Go URL
+
+```bash
+npm run url
+```
+
+This starts `expo start --tunnel` if Metro is not already running, waits for the tunnel, then prints:
+
+```text
+exp://<subdomain>.exp.direct
+```
+
+The same URL is written to `.expo/expo-go-url.txt`. Paste it into Expo Go → Enter URL.
+
+### Or start tunnel yourself
 
 ```bash
 npx expo start --tunnel
@@ -51,15 +68,9 @@ npx expo start --tunnel
 npm run tunnel
 ```
 
-Then open the printed URL in Expo Go, e.g.:
-
-```text
-exp://<subdomain>.exp.direct
-```
-
 Notes:
 
-- Tunnel hostname changes each session; always use the URL from the current `expo start` output.
+- Tunnel hostname changes each session; always use the URL from `npm run url` / current `expo start` output.
 - Keep the Metro/tunnel process running while testing on device.
 - `@expo/ngrok` is already a dependency (required for `--tunnel`).
 
@@ -83,6 +94,7 @@ Scan the QR code with the Camera app (iOS) or Expo Go (Android).
 
 | Command | Purpose |
 |---------|---------|
+| `npm run url` | Start tunnel if needed + print Expo Go `exp://` URL |
 | `npm start` | Metro (LAN) |
 | `npm run tunnel` | Metro + public tunnel for Expo Go |
 | `npx expo-doctor` | Dependency / SDK health check |
