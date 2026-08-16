@@ -80,3 +80,10 @@ User sent a screenshot from Expo Go on iOS:
 > Floral theme
 
 **Outcome:** Floral agenda screen (`Today’s bloom`) with seed plans, add/toggle, home ↔ agenda navigation, tests, and Expo Go test URL.
+
+## 12. Edit task timing
+
+> Give an option to edit the timing for each task
+> (Screenshot of floral agenda list with times)
+
+**Outcome:** (in progress) Per-task time editing on the agenda.

@@ -4,6 +4,7 @@ import {
   FlatList,
   ImageBackground,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   StyleSheet,
@@ -11,11 +12,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   formatAgendaDayLabel,
   formatAgendaTime,
+  fromEditableClockDate,
   sortAgendaItems,
+  toEditableClockDate,
 } from '../agenda/agendaModel';
 import type { AgendaItem } from '../agenda/types';
 
@@ -27,6 +31,7 @@ type AgendaScreenProps = {
   onBack: () => void;
   onToggleDone: (id: string) => void;
   onAddItem: (title: string) => void;
+  onUpdateTime: (id: string, startsAt: string) => void;
 };
 
 export function AgendaScreen({
@@ -35,8 +40,11 @@ export function AgendaScreen({
   onBack,
   onToggleDone,
   onAddItem,
+  onUpdateTime,
 }: AgendaScreenProps) {
   const [draft, setDraft] = useState('');
+  const [editingItem, setEditingItem] = useState<AgendaItem | null>(null);
+  const [draftTime, setDraftTime] = useState<Date | null>(null);
   const listOpacity = useRef(new Animated.Value(0)).current;
   const listTranslate = useRef(new Animated.Value(14)).current;
 
@@ -64,6 +72,27 @@ export function AgendaScreen({
     }
     onAddItem(title);
     setDraft('');
+  };
+
+  const openTimeEditor = (item: AgendaItem) => {
+    setEditingItem(item);
+    setDraftTime(toEditableClockDate(item.startsAt));
+  };
+
+  const closeTimeEditor = () => {
+    setEditingItem(null);
+    setDraftTime(null);
+  };
+
+  const saveTime = () => {
+    if (!editingItem || !draftTime) {
+      return;
+    }
+    onUpdateTime(
+      editingItem.id,
+      fromEditableClockDate(editingItem.startsAt, draftTime),
+    );
+    closeTimeEditor();
   };
 
   return (
@@ -129,27 +158,42 @@ export function AgendaScreen({
               contentContainerStyle={styles.listContent}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={item.title}
-                  onPress={() => onToggleDone(item.id)}
-                  style={({ pressed }) => [
-                    styles.row,
-                    pressed && styles.rowPressed,
-                  ]}
-                >
-                  <Text style={styles.time}>{formatAgendaTime(item.startsAt)}</Text>
-                  <Text
-                    style={[styles.title, item.done && styles.titleDone]}
-                    numberOfLines={2}
+                <View style={styles.row}>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Edit time for ${item.title}`}
+                    onPress={() => openTimeEditor(item)}
+                    style={({ pressed }) => [
+                      styles.timeButton,
+                      pressed && styles.timePressed,
+                    ]}
                   >
-                    {item.title}
-                  </Text>
-                  <View
-                    style={[styles.petal, item.done && styles.petalDone]}
-                    accessibilityElementsHidden
-                  />
-                </Pressable>
+                    <Text style={styles.time}>
+                      {formatAgendaTime(item.startsAt)}
+                    </Text>
+                  </Pressable>
+
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={item.title}
+                    onPress={() => onToggleDone(item.id)}
+                    style={({ pressed }) => [
+                      styles.taskBody,
+                      pressed && styles.rowPressed,
+                    ]}
+                  >
+                    <Text
+                      style={[styles.title, item.done && styles.titleDone]}
+                      numberOfLines={2}
+                    >
+                      {item.title}
+                    </Text>
+                    <View
+                      style={[styles.petal, item.done && styles.petalDone]}
+                      accessibilityElementsHidden
+                    />
+                  </Pressable>
+                </View>
               )}
             />
           )}
@@ -179,6 +223,68 @@ export function AgendaScreen({
           </Pressable>
         </View>
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={editingItem != null}
+        transparent
+        animationType="fade"
+        onRequestClose={closeTimeEditor}
+      >
+        <View style={styles.modalRoot}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Dismiss time editor"
+            style={styles.modalScrim}
+            onPress={closeTimeEditor}
+          />
+          <View style={styles.modalSheet}>
+            <Text style={styles.modalTitle}>Set bloom time</Text>
+            {editingItem ? (
+              <Text style={styles.modalSubtitle} numberOfLines={1}>
+                {editingItem.title}
+              </Text>
+            ) : null}
+            {draftTime ? (
+              <DateTimePicker
+                testID="agenda-time-picker"
+                value={draftTime}
+                mode="time"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                themeVariant="dark"
+                onChange={(_event, selected) => {
+                  if (selected) {
+                    setDraftTime(selected);
+                  }
+                }}
+              />
+            ) : null}
+            <View style={styles.modalActions}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Cancel time edit"
+                onPress={closeTimeEditor}
+                style={({ pressed }) => [
+                  styles.modalGhost,
+                  pressed && styles.backPressed,
+                ]}
+              >
+                <Text style={styles.modalGhostLabel}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Save time"
+                onPress={saveTime}
+                style={({ pressed }) => [
+                  styles.addButton,
+                  pressed && styles.addPressed,
+                ]}
+              >
+                <Text style={styles.addLabel}>Save</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -249,11 +355,27 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 14,
+    paddingVertical: 6,
+    paddingHorizontal: 4,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(247, 240, 232, 0.18)',
+    gap: 10,
+  },
+  timeButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 6,
+    minWidth: 78,
+  },
+  timePressed: {
+    opacity: 0.7,
+  },
+  taskBody: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 14,
+    paddingVertical: 8,
+    paddingRight: 8,
   },
   rowPressed: {
     backgroundColor: 'rgba(247, 240, 232, 0.06)',
@@ -263,7 +385,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     color: '#A8C4A0',
-    width: 72,
   },
   title: {
     flex: 1,
@@ -315,5 +436,49 @@ const styles = StyleSheet.create({
     fontSize: 15,
     letterSpacing: 0.3,
     color: '#F7F0E8',
+  },
+  modalRoot: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalScrim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(18, 10, 8, 0.55)',
+  },
+  modalSheet: {
+    backgroundColor: '#2F201C',
+    paddingTop: 22,
+    paddingHorizontal: 22,
+    paddingBottom: 34,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+  },
+  modalTitle: {
+    fontFamily: 'CormorantGaramond_600SemiBold',
+    fontSize: 28,
+    color: '#F7F0E8',
+    marginBottom: 4,
+  },
+  modalSubtitle: {
+    fontFamily: 'SourceSans3_400Regular',
+    fontSize: 15,
+    color: 'rgba(247, 240, 232, 0.7)',
+    marginBottom: 8,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 16,
+    marginTop: 8,
+  },
+  modalGhost: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+  },
+  modalGhostLabel: {
+    fontFamily: 'SourceSans3_400Regular',
+    fontSize: 15,
+    color: 'rgba(247, 240, 232, 0.78)',
   },
 });

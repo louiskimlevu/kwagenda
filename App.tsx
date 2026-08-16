@@ -19,7 +19,7 @@ import {
   SourceSans3_600SemiBold,
   useFonts as useSourceSansFonts,
 } from '@expo-google-fonts/source-sans-3';
-import { createAgendaItem, toggleAgendaItemDone } from './src/agenda/agendaModel';
+import { createAgendaItem, setAgendaItemTime, toggleAgendaItemDone } from './src/agenda/agendaModel';
 import { sampleAgendaItems } from './src/agenda/sampleAgenda';
 import type { AgendaItem } from './src/agenda/types';
 import { AgendaScreen } from './src/components/AgendaScreen';
@@ -121,6 +121,9 @@ export default function App() {
                 startsAt: new Date().toISOString(),
               }),
             ])
+          }
+          onUpdateTime={(id, startsAt) =>
+            setItems((prev) => setAgendaItemTime(prev, id, startsAt))
           }
         />
         <StatusBar style="light" />

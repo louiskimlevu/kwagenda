@@ -2,8 +2,12 @@ import {
   createAgendaItem,
   formatAgendaDayLabel,
   formatAgendaTime,
+  fromEditableClockDate,
+  setAgendaItemTime,
   sortAgendaItems,
+  toEditableClockDate,
   toggleAgendaItemDone,
+  withTimeOnSameUtcDay,
 } from '../src/agenda/agendaModel';
 import type { AgendaItem } from '../src/agenda/types';
 
@@ -51,5 +55,29 @@ describe('agendaModel', () => {
     const next = toggleAgendaItemDone(items, 'a');
     expect(next.find((i) => i.id === 'a')?.done).toBe(true);
     expect(next.find((i) => i.id === 'b')?.done).toBe(false);
+  });
+
+  it('keeps the UTC day when applying a new clock time', () => {
+    expect(withTimeOnSameUtcDay('2026-08-16T08:30:00.000Z', 15, 45)).toBe(
+      '2026-08-16T15:45:00.000Z',
+    );
+  });
+
+  it('maps displayed UTC clock times into a local picker date and back', () => {
+    const clock = toEditableClockDate('2026-08-16T08:30:00.000Z');
+    expect(clock.getHours()).toBe(8);
+    expect(clock.getMinutes()).toBe(30);
+    expect(fromEditableClockDate('2026-08-16T08:30:00.000Z', clock)).toBe(
+      '2026-08-16T08:30:00.000Z',
+    );
+  });
+
+  it('updates an item start time by id', () => {
+    const items = [base, { ...base, id: 'b', title: 'Tea' }];
+    const next = setAgendaItemTime(items, 'a', '2026-08-16T09:15:00.000Z');
+    expect(next.find((i) => i.id === 'a')?.startsAt).toBe(
+      '2026-08-16T09:15:00.000Z',
+    );
+    expect(next.find((i) => i.id === 'b')?.startsAt).toBe(base.startsAt);
   });
 });

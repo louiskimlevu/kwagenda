@@ -15,3 +15,16 @@ jest.mock('@expo-google-fonts/source-sans-3', () => ({
   SourceSans3_400Regular: 'SourceSans3_400Regular',
   SourceSans3_600SemiBold: 'SourceSans3_600SemiBold',
 }));
+
+jest.mock('@react-native-community/datetimepicker', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    __esModule: true,
+    default: (props: Record<string, unknown>) =>
+      React.createElement(View, {
+        testID: props.testID ?? 'agenda-time-picker',
+        ...props,
+      }),
+  };
+});

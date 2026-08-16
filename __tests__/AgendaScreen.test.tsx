@@ -18,62 +18,39 @@ const sampleItems: AgendaItem[] = [
   },
 ];
 
+const defaultProps = {
+  items: sampleItems,
+  dayIso: '2026-08-16T12:00:00.000Z',
+  onBack: () => {},
+  onToggleDone: () => {},
+  onAddItem: () => {},
+  onUpdateTime: () => {},
+};
+
 describe('AgendaScreen', () => {
   it('shows the floral agenda heading and day label', () => {
-    render(
-      <AgendaScreen
-        items={sampleItems}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={() => {}}
-        onToggleDone={() => {}}
-        onAddItem={() => {}}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} />);
 
     expect(screen.getByText('Today’s bloom')).toBeTruthy();
     expect(screen.getByText(/August 16/)).toBeTruthy();
   });
 
   it('lists agenda items with titles', () => {
-    render(
-      <AgendaScreen
-        items={sampleItems}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={() => {}}
-        onToggleDone={() => {}}
-        onAddItem={() => {}}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} />);
 
     expect(screen.getByText('Morning walk among the blooms')).toBeTruthy();
     expect(screen.getByText('Sketch garden notes')).toBeTruthy();
   });
 
   it('uses a floral background', () => {
-    render(
-      <AgendaScreen
-        items={sampleItems}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={() => {}}
-        onToggleDone={() => {}}
-        onAddItem={() => {}}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} />);
 
     expect(screen.getByTestId('agenda-flowers-background')).toBeTruthy();
   });
 
   it('calls onBack when the back control is pressed', () => {
     const onBack = jest.fn();
-    render(
-      <AgendaScreen
-        items={sampleItems}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={onBack}
-        onToggleDone={() => {}}
-        onAddItem={() => {}}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} onBack={onBack} />);
 
     fireEvent.press(screen.getByRole('button', { name: /back to home/i }));
     expect(onBack).toHaveBeenCalledTimes(1);
@@ -81,19 +58,11 @@ describe('AgendaScreen', () => {
 
   it('toggles an item when pressed', () => {
     const onToggleDone = jest.fn();
-    render(
-      <AgendaScreen
-        items={sampleItems}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={() => {}}
-        onToggleDone={onToggleDone}
-        onAddItem={() => {}}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} onToggleDone={onToggleDone} />);
 
     fireEvent.press(
       screen.getByRole('button', {
-        name: /morning walk among the blooms/i,
+        name: 'Morning walk among the blooms',
       }),
     );
     expect(onToggleDone).toHaveBeenCalledWith('1');
@@ -101,15 +70,7 @@ describe('AgendaScreen', () => {
 
   it('adds a new item from the compose field', () => {
     const onAddItem = jest.fn();
-    render(
-      <AgendaScreen
-        items={sampleItems}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={() => {}}
-        onToggleDone={() => {}}
-        onAddItem={onAddItem}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} onAddItem={onAddItem} />);
 
     fireEvent.changeText(
       screen.getByPlaceholderText(/plant a new plan/i),
@@ -120,18 +81,58 @@ describe('AgendaScreen', () => {
   });
 
   it('shows an empty garden message when there are no items', () => {
-    render(
-      <AgendaScreen
-        items={[]}
-        dayIso="2026-08-16T12:00:00.000Z"
-        onBack={() => {}}
-        onToggleDone={() => {}}
-        onAddItem={() => {}}
-      />,
-    );
+    render(<AgendaScreen {...defaultProps} items={[]} />);
 
     expect(
       screen.getByText(/your garden is quiet — plant a plan/i),
     ).toBeTruthy();
+  });
+
+  it('opens a time editor when a task time is pressed', () => {
+    render(<AgendaScreen {...defaultProps} />);
+
+    fireEvent.press(
+      screen.getByRole('button', {
+        name: /edit time for morning walk among the blooms/i,
+      }),
+    );
+
+    expect(screen.getByText('Set bloom time')).toBeTruthy();
+    expect(screen.getByTestId('agenda-time-picker')).toBeTruthy();
+  });
+
+  it('saves an edited time through onUpdateTime', () => {
+    const onUpdateTime = jest.fn();
+    render(<AgendaScreen {...defaultProps} onUpdateTime={onUpdateTime} />);
+
+    fireEvent.press(
+      screen.getByRole('button', {
+        name: /edit time for morning walk among the blooms/i,
+      }),
+    );
+
+    const picked = new Date(2000, 0, 1, 9, 15, 0, 0);
+    fireEvent(
+      screen.getByTestId('agenda-time-picker'),
+      'onChange',
+      { type: 'set' },
+      picked,
+    );
+    fireEvent.press(screen.getByRole('button', { name: /save time/i }));
+
+    expect(onUpdateTime).toHaveBeenCalledWith('1', '2026-08-16T09:15:00.000Z');
+  });
+
+  it('does not toggle done when editing time', () => {
+    const onToggleDone = jest.fn();
+    render(<AgendaScreen {...defaultProps} onToggleDone={onToggleDone} />);
+
+    fireEvent.press(
+      screen.getByRole('button', {
+        name: /edit time for morning walk among the blooms/i,
+      }),
+    );
+
+    expect(onToggleDone).not.toHaveBeenCalled();
   });
 });
