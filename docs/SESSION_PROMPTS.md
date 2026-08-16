@@ -46,3 +46,12 @@ User sent a screenshot from Expo Go on iOS:
 > In the commit add all my prompts for reference
 
 **Outcome:** This file.
+
+## 7. Agent workflow rules
+
+> Add these rules
+> - implement all features via tdd
+> - log all the user prompts
+> - as part of the implementation, always generate a url to allow the user to test the app locally
+
+**Outcome:** Added constraints 4–6 to `AGENTS.md`; logged this prompt here.

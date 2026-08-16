@@ -11,6 +11,9 @@
 1. **Stay on Expo SDK 54** unless the user explicitly upgrades Expo Go past the App Store build. App Store Expo Go does not support SDK 55+.
 2. For Cloud Agent + physical phone testing, use `npm run url` (or `npx expo start --tunnel`; needs `@expo/ngrok`).
 3. Prefer `npx expo install <package>` so versions match SDK 54.
+4. **Implement all features via TDD** — write failing tests first, then implement until green; do not ship feature code without corresponding tests.
+5. **Log all user prompts** — append every user prompt from the session to [docs/SESSION_PROMPTS.md](./docs/SESSION_PROMPTS.md) (keep outcomes brief).
+6. **Always generate a local test URL** as part of implementation — after changes, run `npm run url` and surface the Expo Go `exp://` URL so the user can test on device.
 
 ## Where to continue
 
