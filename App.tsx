@@ -23,10 +23,11 @@ import { createAgendaItem, setAgendaItemTime, toggleAgendaItemDone } from './src
 import { sampleAgendaItems } from './src/agenda/sampleAgenda';
 import type { AgendaItem } from './src/agenda/types';
 import { AgendaScreen } from './src/components/AgendaScreen';
+import { CompletedSummaryScreen } from './src/components/CompletedSummaryScreen';
 
 const flowersBackground = require('./assets/flowers-background.png');
 
-type Screen = 'home' | 'agenda';
+type Screen = 'home' | 'agenda' | 'completed';
 
 export default function App() {
   const [cormorantLoaded] = useCormorantFonts({
@@ -131,6 +132,18 @@ export default function App() {
     );
   }
 
+  if (screen === 'completed') {
+    return (
+      <>
+        <CompletedSummaryScreen
+          items={items}
+          onBack={() => setScreen('home')}
+        />
+        <StatusBar style="light" />
+      </>
+    );
+  }
+
   return (
     <View style={styles.root}>
       <Animated.View
@@ -185,6 +198,17 @@ export default function App() {
           >
             <Text style={styles.ctaLabel}>Open agenda</Text>
           </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="See completed"
+            style={({ pressed }) => [
+              styles.secondaryCta,
+              pressed && styles.secondaryCtaPressed,
+            ]}
+            onPress={() => setScreen('completed')}
+          >
+            <Text style={styles.secondaryCtaLabel}>See completed</Text>
+          </Pressable>
         </Animated.View>
       </View>
 
@@ -237,6 +261,7 @@ const styles = StyleSheet.create({
   },
   ctaWrap: {
     alignSelf: 'flex-start',
+    gap: 12,
   },
   cta: {
     backgroundColor: '#4F6B4E',
@@ -252,5 +277,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.3,
     color: '#F7F0E8',
+  },
+  secondaryCta: {
+    alignSelf: 'flex-start',
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+  },
+  secondaryCtaPressed: {
+    opacity: 0.7,
+  },
+  secondaryCtaLabel: {
+    fontFamily: 'SourceSans3_600SemiBold',
+    fontSize: 15,
+    letterSpacing: 0.2,
+    color: 'rgba(196, 214, 170, 0.95)',
+    textDecorationLine: 'underline',
+    textDecorationColor: 'rgba(196, 214, 170, 0.45)',
   },
 });

@@ -78,3 +78,7 @@ export function setAgendaItemTime(
 ): AgendaItem[] {
   return items.map((item) => (item.id === id ? { ...item, startsAt } : item));
 }
+
+export function getCompletedAgendaItems(items: AgendaItem[]): AgendaItem[] {
+  return sortAgendaItems(items.filter((item) => item.done));
+}
