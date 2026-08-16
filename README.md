@@ -1,6 +1,6 @@
 # kwagenda
 
-React Native (Expo) iOS app.
+React Native (Expo) iOS app — **Expo SDK 54** (compatible with App Store Expo Go).
 
 ## Run
 
@@ -9,10 +9,10 @@ npm install
 npm start
 ```
 
-Scan the QR code or open the Expo URL in [Expo Go](https://expo.dev/go).
-
 For a shareable tunnel URL (needed when not on the same network):
 
 ```bash
 npx expo start --tunnel
 ```
+
+Open the `exp://…` URL in [Expo Go](https://expo.dev/go) from the App Store.
