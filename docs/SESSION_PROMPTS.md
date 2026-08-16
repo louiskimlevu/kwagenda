@@ -100,46 +100,58 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Home CTA opens a floral completed-tasks summary of done agenda items.
 
-## 15. Due-soon notifications
+## 15. Add plan button spacing
+
+> Add a bit more space for the add plan button
+> (Screenshot of floral agenda compose row flush to bottom/right edges)
+
+**Outcome:** Extra bottom and side inset around the compose “Add” control.
+
+## 16. Add plan button spacing (more)
+
+> One more cm
+
+**Outcome:** Another ~1cm of bottom inset around the compose Add control.
+
+## 17. Due-soon notifications
 
 > When the user is not in the app, send her a notification 10 minutes before a task is due.
 
 **Outcome:** Local due reminders via `expo-notifications` (10 min before), suppressed while the app is foregrounded.
 
-## 16. Reminder lead time
+## 18. Reminder lead time
 
 > Change your 1min
 
 **Outcome:** Due reminders now fire 1 minute before each task (was 10).
 
-## 17. Timezone mode
+## 19. Timezone mode
 
 > Make the app configurable for the tomzelne utc or local
 
 **Outcome:** Home toggle switches agenda display/edit between Local time and UTC; reminders still use absolute stored times.
 
-## 18. Cloud env + iOS notifications
+## 20. Cloud env + iOS notifications
 
 > With our current dev workflow where the server runs in cursor cloud env, will the notification work on my ios app?
 
 **Outcome:** Clarified: yes for local scheduled notifications once the phone loads the app and grants permission; Metro/tunnel is only needed to schedule, not to deliver.
 
-## 19. Resend Expo Go link
+## 21. Resend Expo Go link
 
 > Resend expo go link
 
 **Outcome:** Regenerated and shared the Expo Go launcher URL.
 
-## 20. Notification token?
+## 22. Notification token?
 
 > Is there not a token to use
 
 **Outcome:** Clarified: local due reminders need no Expo push token; a token is only for remote push.
 
-## 21. Merge conflicts with main
+## 23. Merge conflicts with main
 
 > There are merge conflicts with the `main` branch. Review them and classify whether they are simple conflicts, or if there are conflicting intents or other complicating factors. Fix the simple conflicts, and report the complicated ones. Fetch the latest changes to the `main` branch from the origin before you begin.
 
-**Outcome:** Fetched origin/main, classified conflicts, fixed simple ones, reported any complicated ones.
-
+**Outcome:** Fetched `origin/main`; only conflict was append-only `docs/SESSION_PROMPTS.md` (overlapping section numbers) — kept both histories and renumbered. Agenda spacing from main auto-merged cleanly.
 

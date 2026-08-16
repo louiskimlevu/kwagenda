@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { AgendaScreen } from '../src/components/AgendaScreen';
 import type { AgendaItem } from '../src/agenda/types';
@@ -79,6 +80,17 @@ describe('AgendaScreen', () => {
     );
     fireEvent.press(screen.getByRole('button', { name: /add to agenda/i }));
     expect(onAddItem).toHaveBeenCalledWith('Arrange peonies');
+  });
+
+  it('gives the add-plan row room from the screen edges', () => {
+    render(<AgendaScreen {...defaultProps} />);
+
+    const compose = screen.getByTestId('agenda-compose');
+    const style = StyleSheet.flatten(compose.props.style);
+
+    // ~1cm extra beyond the prior inset (≈38pt)
+    expect(style.marginBottom).toBeGreaterThanOrEqual(50);
+    expect(style.paddingRight).toBeGreaterThanOrEqual(6);
   });
 
   it('shows an empty garden message when there are no items', () => {
