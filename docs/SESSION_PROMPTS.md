@@ -118,4 +118,10 @@ User sent a screenshot from Expo Go on iOS:
 
 **Outcome:** Home toggle switches agenda display/edit between Local time and UTC; reminders still use absolute stored times.
 
+## 18. Cloud env + iOS notifications
+
+> With our current dev workflow where the server runs in cursor cloud env, will the notification work on my ios app?
+
+**Outcome:** Clarified: yes for local scheduled notifications once the phone loads the app and grants permission; Metro/tunnel is only needed to schedule, not to deliver.
+
 
