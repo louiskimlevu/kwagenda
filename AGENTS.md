@@ -4,6 +4,7 @@
 
 - Expo SDK **54** docs: https://docs.expo.dev/versions/v54.0.0/
 - Handoff / how to run: [README.md](./README.md)
+- Original setup prompts: [docs/SESSION_PROMPTS.md](./docs/SESSION_PROMPTS.md)
 
 ## Hard constraints
 

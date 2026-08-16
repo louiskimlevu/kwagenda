@@ -32,6 +32,7 @@ index.ts                       # Expo entry (registerRootComponent)
 app.json                       # Expo config (name/slug/scheme: kwagenda)
 package.json                   # Scripts + deps (@expo/ngrok for tunnel)
 scripts/generate-expo-url.sh   # Start tunnel (if needed) + print Expo Go URL
+docs/SESSION_PROMPTS.md        # Original user prompts from setup session
 assets/                        # Icons / splash
 AGENTS.md                      # Points agents at SDK 54 docs
 ```
