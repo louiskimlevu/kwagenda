@@ -53,13 +53,19 @@ Phone is not on the same LAN as a Cloud Agent, so use **tunnel**.
 npm run url
 ```
 
-This starts `expo start --tunnel` if Metro is not already running, waits for the tunnel, then prints:
+This starts `expo start --tunnel` if Metro is not already running, waits for a
+public `*.exp.direct` tunnel (skips `localhost`), then prints a **clickable**
+HTTPS launcher plus an `exp://` fallback:
 
 ```text
+https://<subdomain>.exp.direct/_expo/link?platform=ios
 exp://<subdomain>.exp.direct
 ```
 
-The same URL is written to `.expo/expo-go-url.txt`. Paste it into Expo Go → Enter URL.
+Both are written to `.expo/expo-go-url.txt` (HTTPS launcher first). Tap the
+https link on your phone — it 307-redirects into Expo Go (the bare tunnel root
+only shows manifest JSON in Safari). If the redirect is blocked, paste
+`exp://…` into Expo Go → Enter URL.
 
 ### Or start tunnel yourself
 

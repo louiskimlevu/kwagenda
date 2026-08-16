@@ -55,3 +55,21 @@ User sent a screenshot from Expo Go on iOS:
 > - as part of the implementation, always generate a url to allow the user to test the app locally
 
 **Outcome:** Added constraints 4–6 to `AGENTS.md`; logged this prompt here.
+
+## 8. Flower home page
+
+> Create a beautiful home page with flowers background
+
+**Outcome:** Full-bleed floral home screen in `App.tsx` with brand-forward layout, tests, and Expo Go test URL.
+
+## 9. Clickable Expo URL
+
+> Ensure the url is always clickable
+
+**Outcome:** `npm run url` prefers a clickable `https://*.exp.direct` tunnel link (keeps `exp://` as fallback) and waits past localhost until the tunnel host is ready.
+
+## 10. HTTPS link opened manifest JSON
+
+> (Screenshot) Opening `https://9r9uaby-anonymous-8081.exp.direct` in Safari showed the Expo manifest JSON instead of launching Expo Go.
+
+**Outcome:** Switch the clickable share URL to an Expo Go launcher link that opens the app, not the raw tunnel manifest.
