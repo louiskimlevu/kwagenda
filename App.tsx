@@ -19,15 +19,27 @@ import {
   SourceSans3_600SemiBold,
   useFonts as useSourceSansFonts,
 } from '@expo-google-fonts/source-sans-3';
-import { createAgendaItem, setAgendaItemTime, toggleAgendaItemDone } from './src/agenda/agendaModel';
+import {
+  createAgendaItem,
+  formatTimeZoneModeLabel,
+  setAgendaItemTime,
+  toggleAgendaItemDone,
+  toggleTimeZoneMode,
+} from './src/agenda/agendaModel';
 import { sampleAgendaItems } from './src/agenda/sampleAgenda';
-import type { AgendaItem } from './src/agenda/types';
+import type { AgendaItem, AgendaTimeZoneMode } from './src/agenda/types';
 import { AgendaScreen } from './src/components/AgendaScreen';
 import { CompletedSummaryScreen } from './src/components/CompletedSummaryScreen';
+import {
+  configureDueReminderForegroundBehavior,
+  syncDueReminders,
+} from './src/notifications/scheduleDueReminders';
 
 const flowersBackground = require('./assets/flowers-background.png');
 
 type Screen = 'home' | 'agenda' | 'completed';
+
+configureDueReminderForegroundBehavior();
 
 export default function App() {
   const [cormorantLoaded] = useCormorantFonts({
@@ -42,6 +54,8 @@ export default function App() {
   const fontsReady = cormorantLoaded && sourceSansLoaded;
   const [screen, setScreen] = useState<Screen>('home');
   const [items, setItems] = useState<AgendaItem[]>(sampleAgendaItems);
+  const [timeZoneMode, setTimeZoneMode] =
+    useState<AgendaTimeZoneMode>('local');
   const dayIso = '2026-08-16T12:00:00.000Z';
 
   const bgScale = useRef(new Animated.Value(1)).current;
@@ -49,6 +63,10 @@ export default function App() {
   const brandTranslate = useRef(new Animated.Value(18)).current;
   const copyOpacity = useRef(new Animated.Value(0)).current;
   const ctaOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    void syncDueReminders(items);
+  }, [items]);
 
   useEffect(() => {
     if (!fontsReady || screen !== 'home') {
@@ -112,8 +130,11 @@ export default function App() {
         <AgendaScreen
           items={items}
           dayIso={dayIso}
+          timeZoneMode={timeZoneMode}
           onBack={() => setScreen('home')}
-          onToggleDone={(id) => setItems((prev) => toggleAgendaItemDone(prev, id))}
+          onToggleDone={(id) =>
+            setItems((prev) => toggleAgendaItemDone(prev, id))
+          }
           onAddItem={(title) =>
             setItems((prev) => [
               ...prev,
@@ -137,6 +158,7 @@ export default function App() {
       <>
         <CompletedSummaryScreen
           items={items}
+          timeZoneMode={timeZoneMode}
           onBack={() => setScreen('home')}
         />
         <StatusBar style="light" />
@@ -208,6 +230,22 @@ export default function App() {
             onPress={() => setScreen('completed')}
           >
             <Text style={styles.secondaryCtaLabel}>See completed</Text>
+          </Pressable>
+          <Pressable
+            testID="timezone-mode-toggle"
+            accessibilityRole="button"
+            accessibilityLabel={`Use ${
+              timeZoneMode === 'local' ? 'UTC' : 'local'
+            } time. Currently ${formatTimeZoneModeLabel(timeZoneMode)}.`}
+            style={({ pressed }) => [
+              styles.timezoneToggle,
+              pressed && styles.timezoneTogglePressed,
+            ]}
+            onPress={() => setTimeZoneMode((mode) => toggleTimeZoneMode(mode))}
+          >
+            <Text style={styles.timezoneToggleLabel}>
+              {formatTimeZoneModeLabel(timeZoneMode)}
+            </Text>
           </Pressable>
         </Animated.View>
       </View>
@@ -293,5 +331,20 @@ const styles = StyleSheet.create({
     color: 'rgba(196, 214, 170, 0.95)',
     textDecorationLine: 'underline',
     textDecorationColor: 'rgba(196, 214, 170, 0.45)',
+  },
+  timezoneToggle: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+  },
+  timezoneTogglePressed: {
+    opacity: 0.7,
+  },
+  timezoneToggleLabel: {
+    fontFamily: 'SourceSans3_400Regular',
+    fontSize: 13,
+    letterSpacing: 0.3,
+    color: 'rgba(247, 240, 232, 0.62)',
   },
 });

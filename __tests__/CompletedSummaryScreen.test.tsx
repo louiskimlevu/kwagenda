@@ -20,6 +20,7 @@ const completedItems: AgendaItem[] = [
 
 const defaultProps = {
   items: completedItems,
+  timeZoneMode: 'utc' as const,
   onBack: () => {},
 };
 

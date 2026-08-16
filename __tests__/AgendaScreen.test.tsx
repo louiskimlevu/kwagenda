@@ -22,6 +22,7 @@ const sampleItems: AgendaItem[] = [
 const defaultProps = {
   items: sampleItems,
   dayIso: '2026-08-16T12:00:00.000Z',
+  timeZoneMode: 'utc' as const,
   onBack: () => {},
   onToggleDone: () => {},
   onAddItem: () => {},
@@ -113,9 +114,15 @@ describe('AgendaScreen', () => {
     expect(screen.getByTestId('agenda-time-picker')).toBeTruthy();
   });
 
-  it('saves an edited time through onUpdateTime', () => {
+  it('saves an edited time through onUpdateTime using the timezone mode', () => {
     const onUpdateTime = jest.fn();
-    render(<AgendaScreen {...defaultProps} onUpdateTime={onUpdateTime} />);
+    render(
+      <AgendaScreen
+        {...defaultProps}
+        timeZoneMode="utc"
+        onUpdateTime={onUpdateTime}
+      />,
+    );
 
     fireEvent.press(
       screen.getByRole('button', {
@@ -133,6 +140,36 @@ describe('AgendaScreen', () => {
     fireEvent.press(screen.getByRole('button', { name: /save time/i }));
 
     expect(onUpdateTime).toHaveBeenCalledWith('1', '2026-08-16T09:15:00.000Z');
+  });
+
+  it('saves an edited local time through onUpdateTime', () => {
+    const onUpdateTime = jest.fn();
+    render(
+      <AgendaScreen
+        {...defaultProps}
+        timeZoneMode="local"
+        onUpdateTime={onUpdateTime}
+      />,
+    );
+
+    fireEvent.press(
+      screen.getByRole('button', {
+        name: /edit time for morning walk among the blooms/i,
+      }),
+    );
+
+    const picked = new Date(2000, 0, 1, 9, 15, 0, 0);
+    fireEvent(
+      screen.getByTestId('agenda-time-picker'),
+      'onChange',
+      { type: 'set' },
+      picked,
+    );
+    fireEvent.press(screen.getByRole('button', { name: /save time/i }));
+
+    const expected = new Date('2026-08-16T08:30:00.000Z');
+    expected.setHours(9, 15, 0, 0);
+    expect(onUpdateTime).toHaveBeenCalledWith('1', expected.toISOString());
   });
 
   it('does not toggle done when the time control is pressed', () => {

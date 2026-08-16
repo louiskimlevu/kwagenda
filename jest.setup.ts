@@ -28,3 +28,16 @@ jest.mock('@react-native-community/datetimepicker', () => {
       }),
   };
 });
+
+jest.mock('expo-notifications', () => ({
+  SchedulableTriggerInputTypes: { DATE: 'date' },
+  setNotificationHandler: jest.fn(),
+  getPermissionsAsync: jest.fn(() =>
+    Promise.resolve({ status: 'granted', granted: true }),
+  ),
+  requestPermissionsAsync: jest.fn(() =>
+    Promise.resolve({ status: 'granted', granted: true }),
+  ),
+  cancelAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve()),
+  scheduleNotificationAsync: jest.fn(() => Promise.resolve('mock-id')),
+}));
